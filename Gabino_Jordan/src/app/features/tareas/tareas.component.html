@@ -1,0 +1,110 @@
+<div class="tareas-container">
+  <h2>Gestión de Tareas</h2>
+
+  @if (error()) {
+    <p class="mensaje error">{{ error() }}</p>
+  }
+  @if (mensajeExito()) {
+    <p class="mensaje exito">{{ mensajeExito() }}</p>
+  }
+
+  <!-- Reporte de pendientes/vencidas por usuario -->
+  <section class="bloque">
+    <h3>Reporte: Pendientes y Vencidas por Usuario</h3>
+
+    @if (cargandoReporte()) {
+      <p>Cargando reporte...</p>
+    } @else {
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>ID Usuario</th>
+            <th>Nombre</th>
+            <th>Pendientes</th>
+            <th>Vencidas</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of reporte(); track u.idUsuario) {
+            <tr>
+              <td>{{ u.idUsuario }}</td>
+              <td>{{ u.nombre }}</td>
+              <td>{{ u.totalPendientes }}</td>
+              <td [class.alerta]="u.totalVencidas > 0">{{ u.totalVencidas }}</td>
+            </tr>
+          } @empty {
+            <tr><td colspan="4">Sin datos</td></tr>
+          }
+        </tbody>
+      </table>
+      <button (click)="cargarReporte()">Actualizar reporte</button>
+    }
+  </section>
+
+  <!-- Crear tarea -->
+  <section class="bloque">
+    <h3>Nueva tarea</h3>
+    <form (ngSubmit)="crearTarea()" class="form-inline">
+      <div class="campo">
+        <label>Título</label>
+        <input type="text" [(ngModel)]="form().titulo" name="titulo" required />
+      </div>
+      <div class="campo">
+        <label>ID Usuario</label>
+        <input type="number" [(ngModel)]="form().idUsuario" name="idUsuario" required />
+      </div>
+      <div class="campo">
+        <label>Fecha de vencimiento</label>
+        <input type="date" [(ngModel)]="form().fechaVencimiento" name="fechaVencimiento" />
+      </div>
+      <div class="campo">
+        <label>Estado</label>
+        <select [(ngModel)]="form().estado" name="estado">
+          <option value="Pendiente">Pendiente</option>
+          <option value="En Progreso">En Progreso</option>
+          <option value="Completada">Completada</option>
+        </select>
+      </div>
+      <button type="submit">Crear tarea</button>
+    </form>
+  </section>
+
+  <!-- Actualizar tarea por ID -->
+  <section class="bloque">
+    <h3>Actualizar tarea</h3>
+    <form (ngSubmit)="actualizarTarea()" class="form-inline">
+      <div class="campo">
+        <label>ID Tarea</label>
+        <input type="number" [ngModel]="idEditar()" (ngModelChange)="idEditar.set($event)" name="idEditar" required />
+      </div>
+      <div class="campo">
+        <label>Nuevo título (opcional)</label>
+        <input type="text" [ngModel]="cambiosEdicion().titulo"
+               (ngModelChange)="setTituloEdicion($event)" name="tituloEdit" />
+      </div>
+      <div class="campo">
+        <label>Nuevo estado (opcional)</label>
+        <select [ngModel]="cambiosEdicion().estado"
+                (ngModelChange)="setEstadoEdicion($event)" name="estadoEdit">
+          <option [ngValue]="undefined">-- sin cambio --</option>
+          <option value="Pendiente">Pendiente</option>
+          <option value="En Progreso">En Progreso</option>
+          <option value="Completada">Completada</option>
+        </select>
+      </div>
+      <button type="submit">Actualizar</button>
+    </form>
+  </section>
+
+  <!-- Eliminar tarea por ID -->
+  <section class="bloque">
+    <h3>Eliminar tarea</h3>
+    <form (ngSubmit)="eliminarTarea()" class="form-inline">
+      <div class="campo">
+        <label>ID Tarea</label>
+        <input type="number" [ngModel]="idEliminar()" (ngModelChange)="idEliminar.set($event)" name="idEliminar" required />
+      </div>
+      <button type="submit" class="btn-eliminar">Eliminar</button>
+    </form>
+  </section>
+</div>

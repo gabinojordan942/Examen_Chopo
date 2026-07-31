@@ -1,0 +1,29 @@
+<!-- src/app/components/usuario-form/usuario-form.component.html -->
+<h2>{{ idUsuario ? 'Editar usuario' : 'Nuevo usuario' }}</h2>
+
+@if (error) {
+  <p class="error">{{ error }}</p>
+}
+
+<form [formGroup]="form" (ngSubmit)="guardar()">
+  <div>
+    <label for="nombre">Nombre</label>
+    <input id="nombre" type="text" formControlName="nombre" />
+    @if (form.controls.nombre.invalid && form.controls.nombre.touched) {
+      <span class="error">El nombre es obligatorio</span>
+    }
+  </div>
+
+  <div>
+    <label for="email">Email</label>
+    <input id="email" type="email" formControlName="email" />
+    @if (form.controls.email.invalid && form.controls.email.touched) {
+      <span class="error">Ingresa un email válido</span>
+    }
+  </div>
+
+  <button type="submit" [disabled]="guardando">
+    {{ guardando ? 'Guardando...' : 'Guardar' }}
+  </button>
+  <button type="button" (click)="cancelar()">Cancelar</button>
+</form>

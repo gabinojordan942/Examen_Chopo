@@ -1,0 +1,44 @@
+<!-- src/app/components/tarea-form/tarea-form.component.html -->
+<h2>{{ idTarea ? 'Editar tarea' : 'Nueva tarea' }}</h2>
+
+@if (error) {
+  <p class="error">{{ error }}</p>
+}
+
+<form [formGroup]="form" (ngSubmit)="guardar()">
+  <div>
+    <label for="idUsuario">Usuario (ID)</label>
+    <input id="idUsuario" type="number" formControlName="idUsuario" />
+    @if (form.controls.idUsuario.invalid && form.controls.idUsuario.touched) {
+      <span class="error">El usuario es obligatorio</span>
+    }
+  </div>
+
+  <div>
+    <label for="titulo">Título</label>
+    <input id="titulo" type="text" formControlName="titulo" />
+    @if (form.controls.titulo.invalid && form.controls.titulo.touched) {
+      <span class="error">El título es obligatorio (máx. 200 caracteres)</span>
+    }
+  </div>
+
+  <div>
+    <label for="fechaVencimiento">Fecha de vencimiento</label>
+    <input id="fechaVencimiento" type="date" formControlName="fechaVencimiento" />
+  </div>
+
+  <div>
+    <label for="estado">Estado</label>
+    <select id="estado" formControlName="estado">
+      <option value="Pendiente">Pendiente</option>
+      <option value="En Progreso">En progreso</option>
+      <option value="Completada">Completada</option>
+      <option value="Cancelada">Cancelada</option>
+    </select>
+  </div>
+
+  <button type="submit" [disabled]="guardando">
+    {{ guardando ? 'Guardando...' : 'Guardar' }}
+  </button>
+  <button type="button" (click)="cancelar()">Cancelar</button>
+</form>

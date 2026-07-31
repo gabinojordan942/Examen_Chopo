@@ -1,0 +1,77 @@
+.tareas-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  font-family: sans-serif;
+  padding: 0 1rem;
+}
+
+.bloque {
+  background: #f7f7f9;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.mensaje {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+.error { background: #fdecea; color: #c0392b; }
+.exito { background: #eafaf1; color: #27ae60; }
+
+.form-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.campo label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.campo input,
+.campo select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background: #3498db;
+  color: white;
+  height: fit-content;
+}
+button:hover { opacity: 0.9; }
+
+.btn-eliminar { background: #e74c3c; }
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+.tabla th, .tabla td {
+  text-align: left;
+  padding: 0.6rem;
+  border-bottom: 1px solid #eee;
+}
+.alerta {
+  color: #c0392b;
+  font-weight: bold;
+}
