@@ -1,0 +1,65 @@
+name: CI Pipeline con NUnit y SonarQube
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-test-and-analyze:
+    name: Build, Test and Analyze
+    runs-on: windows-latest # Usualmente Windows es ideal para .NET tradicional, o ubuntu-latest para .NET Core
+
+    steps:
+      # 1. Descargar el código fuente del repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Importante para que SonarQube analice el historial completo
+
+      # 2. Configurar el SDK de .NET
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0' # Ajusta la versión según tu proyecto
+
+      # 3. Instalar herramientas de SonarQube para .NET (SonarScanner)
+      - name: Set up Java (Requerido por SonarScanner)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'microsoft'
+          java-version: '17'
+
+      - name: Install SonarQube Scanner
+        run: |
+          dotnet tool install --global dotnet-sonarscanner
+
+      # 4. Iniciar el análisis de SonarQube
+      - name: Start SonarQube Analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Token secreto guardado en GitHub
+        run: |
+          dotnet sonarscanner begin /k:"MiProyecto_DotNet" \
+            /o:"mi-organizacion" \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.cs.nunit.reportsPaths="**/TestResults/*.xml"
+
+      # 5. Compilar el código
+      - name: Restore dependencies and Build
+        run: dotnet build --configuration Release
+
+      # 6. Ejecutar las pruebas unitarias con NUnit y generar reporte
+      - name: Run NUnit Tests
+        run: |
+          dotnet test --configuration Release --no-build --logger "nunit;LogFileName=nunit-results.xml"
+
+      # 7. Finalizar y enviar los resultados a SonarQube
+      - name: Complete SonarQube Analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
